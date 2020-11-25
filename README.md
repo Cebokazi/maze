@@ -1,2 +1,2 @@
 # maze
-index
+index.html
