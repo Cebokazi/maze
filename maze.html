@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-color: coral;
+            }
+            div.a {
+                text-align: left;
+            }
+            div.b {
+                text-align: right;
+            }
+            div.c {
+                text-align: left;
+            }
+            div.d {
+                text-align: right;
+            }
+            body{
+			margin: 0;
+			padding: 0;
+		}
+		button{
+			margin: 0 20px;
+			padding: 10px 20px;
+			background: #ff0;
+			color: #f50;
+			border-radius: 12%;
+			text-transform: uppercase;
+			font-weight: bolder;
+			outline: none;
+		}
+		canvas{
+			position: absolute;
+			margin: auto;
+			left: 0;
+			right: 0;
+		}
+		.btn{
+		    position: absolute;
+		    margin: auto;
+		    top: 0px;
+		    left: 0px;
+		    right: 0px;
+		    text-align: center;
+		}
+		div.e {
+			text-align: left;
+		}
+
+		h1 {
+			font-family: fantasy;
+		}
+
+        </style>
+    </head>
+
+<body>
+<canvas id="canvas"></canvas>
+<div class="btn">
+
+        <div class="a">
+        <button onclick="left()">Left</button></div>
+        <div class="b">
+            <br><br><br>
+        <button onclick="right()">Right</button></div>
+        <div class="c">
+        <button onclick="up()">Up</button></div>
+        <div class="d">
+            <br><br><br>
+		<button onclick="down()">Down</button>
+</div>
+<br><br><br><br><br><br>
+
+<div class="e">
+<h1>How to play :</h1>
+<ol type="1">
+	<li>Play the game using the control buttons</li>
+	<li>Avoid hitting the black blocks</li>
+	<li>Hitting the black blocks will take you back to the starting point</li>
+	<li>Take your time and enjoy!</li>
+</ol>
+</div>
+
+
+
+<script>
+    var canvas;
+		var ctx;
+		const wh = 60;
+		var x = 60;
+		var y = 60;
+
+		var showwinscreen = false;
+
+		xy = [[0,60], [60, 120], [0, 180], [0, 240], [0, 300], [0, 360], [60, 420], [0, 480], 
+
+			[600, 60], [600, 120], [540, 180], [600, 240], [600, 300], [600, 360],[540, 420], [600, 480],
+
+		[60,0], [120,0], [180, 60], [240, 60], [300,0], [360,0], [420, 0], [480, 60], [540, 0],
+
+		[60,540], [120,540], [180, 480], [240, 480], [300,540], [360,540], [420, 540], [480, 540], [540, 540],
+
+		[360, 120], [420, 120], [180, 180], [300, 180], [360, 180], [120, 240], [180, 240], [480, 240], [300, 300], [360, 300], [480, 300], [120, 360], [240, 360], [420, 360], [360, 420], [420, 420]
+		];
+
+
+		window.onload = function(){
+			canvas = document.getElementById('canvas');
+			ctx = canvas.getContext('2d');
+			canvas.width = 660;
+			canvas.height = 600;
+
+			draw();
+		}
+		function draw(){
+			
+			//draw background
+			drawrect(0, 0, canvas.width, canvas.height, 'silver');
+
+			//draw obstacle
+			drawrect(0, 0, canvas.width, wh, 'black');
+			drawrect(0, 0, wh, canvas.height, 'blue');
+			drawrect(0, canvas.height-wh, canvas.width, wh, 'black');
+			drawrect(canvas.width-wh, 0, wh, canvas.height, 'blue');
+
+			drawrect(180, wh, 120, wh, 'black');
+			drawrect(480, wh, wh, wh, 'blue');
+
+			drawrect(wh, 120, wh, wh, 'black');
+			drawrect(360, 120, 120, wh, 'blue');
+			drawrect(420, 120, wh, wh, 'black');
+
+			drawrect(180, 180, wh, wh, 'blue');
+			drawrect(300, 180, 120, wh, 'black');
+			drawrect(540, 180, wh, wh, 'blue');
+
+			drawrect(120, 240, 120, wh, 'black');
+			drawrect(480, 240, wh, wh, 'blue');
+
+			drawrect(300, 300, 120, wh, 'black');
+			drawrect(480, 300, wh, wh, 'blue');
+
+			drawrect(120, 360, wh, wh, 'black');
+			drawrect(240, 360, wh, wh, 'blue');
+			drawrect(420, 360, wh, wh, 'black');
+
+			drawrect(wh, 420, wh, wh, 'blue');
+			drawrect(360, 420, 120, wh, 'black');
+			drawrect(540, 420, wh, wh, 'blue');
+
+			drawrect(180, 480, 120, wh, 'black');
+
+			//draw  moving square
+			drawrect(x, y, wh, wh, 'yellow');
+
+			//draw finishing square
+			drawrect(540, 480, wh, wh,'#3d3d3d');
+		}
+		function drawrect(x, y, width, height, color){
+			ctx.fillStyle = color;
+			ctx.fillRect(x, y, width, height);
+		}
+
+		function checkWin(){
+			if(x == 540 && y == 480){
+				ctx.font = '55px Verdana';
+				ctx.fillText('You won', canvas.width/2 - 100, canvas.height/2 - 40);
+
+				showwinscreen = true;
+
+				return;
+			}
+		}
+
+		function left(){
+			if(showwinscreen){
+				return;
+			}
+			drawrect(x,y,wh,wh,"silver");
+			x -= 60;
+			for(var i=0; i<xy.length; i++){
+			if((x == xy[i][0]) && (y == xy[i][1])){
+				x = 60;
+				y=60;
+			}
+		}
+		
+		drawrect(x,y,wh,wh,"red");
+
+		checkWin()
+		}
+
+		function right(){
+			if(showwinscreen){
+				return;
+			}
+			drawrect(x,y,wh,wh,"silver");
+			x += 60;
+			for(var i=0; i<xy.length; i++){
+			if((x == xy[i][0]) && (y == xy[i][1])){
+				x = 60;
+				y=60;
+			}
+		}
+			drawrect(x,y,wh,wh,"red");
+
+			checkWin()
+		}
+
+		function up(){
+			if(showwinscreen){
+				return;
+			}
+			drawrect(x,y,wh,wh,"silver");
+			y -= 60;
+			for(var i=0; i<xy.length; i++){
+			if((x == xy[i][0]) && (y == xy[i][1])){
+				x = 60;
+				y=60;
+			}
+		}
+			drawrect(x,y,wh,wh,"red");
+
+			checkWin()
+		}
+
+		function down(){
+			if(showwinscreen){
+				return;
+			}
+			drawrect(x,y,wh,wh,"silver");
+			y += 60;
+			for(var i=0; i<xy.length; i++){
+			if((x == xy[i][0]) && (y == xy[i][1])){
+				x = 60;
+				y=60;
+			}
+		}
+			drawrect(x,y,wh,wh,"red");
+
+			checkWin()
+		}
+</script>
+</body>
+</html>
